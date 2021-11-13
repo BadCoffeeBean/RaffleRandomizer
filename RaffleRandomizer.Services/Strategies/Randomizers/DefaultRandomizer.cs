@@ -12,7 +12,7 @@ namespace RaffleRandomizer.Core
 	{
 		public IEnumerable<T> Randomize(IEnumerable<T> list)
 		{
-			if (list is null || list.Count() < 1) throw new ArgumentException("List of participants is empty.");
+			if (list is null || !list.Any()) throw new ArgumentException("List of participants is empty.");
 			var random = new Random();
 			return list.OrderBy(l => random.NextDouble());
 		}

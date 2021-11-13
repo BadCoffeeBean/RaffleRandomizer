@@ -12,7 +12,7 @@ namespace RaffleRandomizer.Core
 	{
 		public IEnumerable<T> Pick(int count, IEnumerable<T> list)
 		{
-			if (list is null || list.Count() < 1) throw new ArgumentException("List of participants is empty.");
+			if (list is null || !list.Any()) throw new ArgumentException("List of participants is empty.");
 			if (count < 1 || count > list.Count()) throw new ArgumentException($"Winners should be between 1 and {list.Count()}.");
 			return list.Take(count);
 		}
