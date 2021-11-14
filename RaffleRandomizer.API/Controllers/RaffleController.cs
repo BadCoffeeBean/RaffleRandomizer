@@ -28,7 +28,16 @@ namespace RaffleRandomizer.API.Controllers
 			[FromQuery] int count,
 			[FromBody] IEnumerable<object> list)
 		{
-			return new ObjectResult(_raffleService.GenerateWinners(count, list));
+			try
+			{
+				return new ObjectResult(_raffleService.GenerateWinners(count, list));
+			}
+
+			catch (Exception e)
+			{
+				return BadRequest(e.Message);
+			}
+			
 		}
 	}
 }

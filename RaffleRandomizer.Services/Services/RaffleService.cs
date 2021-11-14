@@ -14,8 +14,18 @@ namespace RaffleRandomizer.Core
 		public RaffleService(IConfiguration config)
 		{
 			_configuration = config ?? throw new ArgumentNullException("config");
-			_randomizer = config.GetValue<string>("RandomizerMode") == "Default" ? new DefaultRandomizer<object>() : default;
-			_picker = config.GetValue<string>("PickMode") == "Default" ? new DefaultPicker<object>() : default;
+
+			_randomizer = config.GetValue<string>("RandomizerMode") switch
+			{
+				"RNGCSP" => new RNGCSPRandomizer<object>(),
+				_ => new DefaultRandomizer<object>()
+			};
+
+			_picker = config.GetValue<string>("PickMode") switch
+			{
+				"RNGCSP" => new RNGCSPPicker<object>(),
+				_ => new DefaultPicker<object>()
+			};
 		}
 		
 		public IEnumerable<object> GenerateWinners(int count, IEnumerable<object> list)
