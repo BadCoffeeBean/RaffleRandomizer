@@ -40,10 +40,15 @@ namespace RaffleRandomizer.API
 		{
 			app.UseDeveloperExceptionPage();
 			app.UseSwagger();
-			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RaffleRandomizer API v1"));
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "RaffleRandomizer API v1");
+				c.RoutePrefix = "";
+			});
 			app.UseHttpsRedirection();
 			app.UseRouting();
 			app.UseAuthorization();
+			app.UseStaticFiles();
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
