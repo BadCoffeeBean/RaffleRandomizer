@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +29,8 @@ namespace RaffleRandomizer.API
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddSingleton<IRaffleService, RaffleService>();
+			services.AddScoped<IDatabaseService, DatabaseService>();
+			services.AddDbContext<RaffleContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Main")));
 			services.AddControllers();
 			services.AddSwaggerGen(c =>
 			{

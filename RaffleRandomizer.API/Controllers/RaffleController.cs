@@ -15,13 +15,19 @@ namespace RaffleRandomizer.API.Controllers
 	{
 		private readonly ILogger<RaffleController> _logger;
 		private readonly IRaffleService _raffleService;
+		private readonly IDatabaseService _databaseService;
+		private readonly RaffleContext _database;
 
 		public RaffleController(
 			ILogger<RaffleController> logger,
-			IRaffleService raffleService)
+			IRaffleService raffleService,
+			IDatabaseService databaseService,
+			RaffleContext database)
 		{
 			_logger = logger;
 			_raffleService = raffleService;
+			_databaseService = databaseService;
+			_database = database;
 		}
 
 		/// <summary>
@@ -57,7 +63,7 @@ namespace RaffleRandomizer.API.Controllers
 		{
 			try
 			{
-				return new NotFoundResult();
+				return new ObjectResult(_raffleService.GenerateWinners(count, _databaseService.GetParticipants(new Participant { HireDate = DateTime.Parse("2009-12-31")})));
 			}
 
 			catch (Exception e)
