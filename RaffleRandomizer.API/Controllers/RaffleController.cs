@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using RaffleRandomizer.Core;
 using System;
@@ -15,18 +16,18 @@ namespace RaffleRandomizer.API.Controllers
 	{
 		private readonly ILogger<RaffleController> _logger;
 		private readonly IRaffleService _raffleService;
-		private readonly IDatabaseService _databaseService;
+		private readonly IDataService _dataService;
 		private readonly RaffleContext _database;
 
 		public RaffleController(
 			ILogger<RaffleController> logger,
 			IRaffleService raffleService,
-			IDatabaseService databaseService,
+			IDataService dataService,
 			RaffleContext database)
 		{
 			_logger = logger;
 			_raffleService = raffleService;
-			_databaseService = databaseService;
+			_dataService = dataService;
 			_database = database;
 		}
 
@@ -48,27 +49,39 @@ namespace RaffleRandomizer.API.Controllers
 
 			catch (Exception e)
 			{
-				return BadRequest(e.Message);
+				return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 			}
 		}
 
 		/// <summary>
-		/// Provides a list of winners from a pre-configured database. (WIP)
+		/// Provides a list of winners from a pre-configured database.
 		/// </summary>
 		/// <param name="count"></param>
+		/// <param name="prizeType"></param>
 		/// <returns></returns>
-		[HttpPost("winners/db")]
+		[HttpGet("winners/db")]
 		public IActionResult GetWinnersFromDatabase(
-			[FromQuery, Required] int count)
+			[FromQuery, Required] int count,
+			[FromQuery, Required] string prizeType)
 		{
 			try
 			{
-				return new ObjectResult(_raffleService.GenerateWinners(count, _databaseService.GetParticipantsByDate(DateTime.Parse("1999-12-31"), DateTime.MinValue)));
+				switch (prizeType.ToLowerInvariant())
+				{ 
+					case "grand":
+						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(true, null, null)));
+					case "major":
+						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(null, true, null)));
+					case "minor":
+						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(null, null, true)));
+					default:
+						return BadRequest("Invalid Prize Type. Valid types are: \"grand\", \"major\", and \"minor\".");
+				}
 			}
 
 			catch (Exception e)
 			{
-				return BadRequest(e.Message);
+				return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 			}
 		}
 
@@ -78,19 +91,19 @@ namespace RaffleRandomizer.API.Controllers
 		/// <param name="id"></param>
 		/// <param name="count"></param>
 		/// <returns></returns>
-		[HttpPost("winners/teams/meeting")]
+		[HttpGet("winners/teams/meeting")]
 		public IActionResult GetWinnersFromTeamsMeeting(
 			[FromQuery, Required] string meetingId,
 			[FromQuery, Required] int count)
 		{
 			try
 			{
-				return new NotFoundResult();
+				return BadRequest("DEMO");
 			}
 
 			catch (Exception e)
 			{
-				return BadRequest(e.Message);
+				return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 			}
 		}
 
@@ -100,19 +113,19 @@ namespace RaffleRandomizer.API.Controllers
 		/// <param name="id"></param>
 		/// <param name="count"></param>
 		/// <returns></returns>
-		[HttpPost("winners/teams/event")]
+		[HttpGet("winners/teams/event")]
 		public IActionResult GetWinnersFromTeamsLiveEvent(
 			[FromQuery, Required] string eventId,
 			[FromQuery, Required] int count)
 		{
 			try
 			{
-				return new NotFoundResult();
+				return BadRequest("DEMO");
 			}
 
 			catch (Exception e)
 			{
-				return BadRequest(e.Message);
+				return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 			}
 		}
 	}

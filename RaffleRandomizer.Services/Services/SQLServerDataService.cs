@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace RaffleRandomizer.Core
 {
-	public class DatabaseService : IDatabaseService
+	public class SQLServerDataService : IDataService
 	{
 		RaffleContext _database = null;
 
-		public DatabaseService(RaffleContext context)
+		public SQLServerDataService(RaffleContext context)
 		{
 			_database = context;
 		}

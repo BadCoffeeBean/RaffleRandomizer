@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RaffleRandomizer.Core
 {
-	public interface IDatabaseService
+	public interface IDataService
 	{
 		public Participant GetParticipant(Participant searchCriteria);
 
