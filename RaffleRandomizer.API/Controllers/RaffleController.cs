@@ -63,7 +63,7 @@ namespace RaffleRandomizer.API.Controllers
 		{
 			try
 			{
-				return new ObjectResult(_raffleService.GenerateWinners(count, _databaseService.GetParticipants(new Participant { HireDate = DateTime.Parse("2009-12-31")})));
+				return new ObjectResult(_raffleService.GenerateWinners(count, _databaseService.GetParticipantsByDate(DateTime.Parse("1999-12-31"), DateTime.MinValue)));
 			}
 
 			catch (Exception e)

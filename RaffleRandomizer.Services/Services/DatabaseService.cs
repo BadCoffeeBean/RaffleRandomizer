@@ -53,9 +53,9 @@ namespace RaffleRandomizer.Core
 			if (searchCriteria.ResignDate != default && searchCriteria.ResignDate != DateTime.MinValue) predicate = predicate.And(p => p.ResignDate == searchCriteria.ResignDate);
 			if (searchCriteria.GrandPrizeEligible != null) predicate = predicate.And(p => p.GrandPrizeEligible == searchCriteria.GrandPrizeEligible);
 			if (searchCriteria.MajorPrizeEligible != null) predicate = predicate.And(p => p.MajorPrizeEligible == searchCriteria.MajorPrizeEligible);
-			if (searchCriteria.GrandPrizeEligible != null) predicate = predicate.And(p => p.MinorPrizeEligible == searchCriteria.MinorPrizeEligible);
+			if (searchCriteria.MinorPrizeEligible != null) predicate = predicate.And(p => p.MinorPrizeEligible == searchCriteria.MinorPrizeEligible);
 
-			return _database.Participants.AsExpandable().Where(predicate);
+			return _database.Participants.AsExpandable().Where(predicate).ToList();
 		}
 
 		public IEnumerable<Participant> GetParticipantsByDate(DateTime hireDate, DateTime resignedDate)
@@ -65,9 +65,9 @@ namespace RaffleRandomizer.Core
 			var predicate = PredicateBuilder.New<Participant>();
 
 			if (hireDate > DateTime.MinValue) predicate = predicate.And(p => p.HireDate >= hireDate);
-			if (resignedDate > DateTime.MinValue) predicate = predicate.And(p => p.ResignDate >= resignedDate);
+			if (resignedDate > DateTime.MinValue) predicate = predicate.And(p => p.ResignDate <= resignedDate);
 
-			return _database.Participants.AsExpandable().Where(predicate);
+			return _database.Participants.AsExpandable().Where(predicate).ToList();
 		}
 
 		public IEnumerable<Participant> GetParticipantsByName(string firstName, string middleName, string lastName)
@@ -80,7 +80,7 @@ namespace RaffleRandomizer.Core
 			if (!string.IsNullOrWhiteSpace(middleName)) predicate = predicate.And(p => p.MiddleName == middleName);
 			if (!string.IsNullOrWhiteSpace(lastName)) predicate = predicate.And(p => p.LastName == lastName);
 
-			return _database.Participants.AsExpandable().Where(predicate);
+			return _database.Participants.AsExpandable().Where(predicate).ToList();
 		}
 
 		public IEnumerable<Participant> GetParticipantsByRaffleEligibility(bool? grandPrizeEligible, bool? majorPrizeEligible, bool? minorPrizeEligible)
@@ -93,7 +93,7 @@ namespace RaffleRandomizer.Core
 			if (majorPrizeEligible != null) predicate = predicate = predicate.And(p => p.MajorPrizeEligible == majorPrizeEligible);
 			if (minorPrizeEligible != null) predicate = predicate = predicate.And(p => p.MinorPrizeEligible == minorPrizeEligible);
 
-			return _database.Participants.AsExpandable().Where(predicate);
+			return _database.Participants.AsExpandable().Where(predicate).ToList();
 		}
 	}
 }
