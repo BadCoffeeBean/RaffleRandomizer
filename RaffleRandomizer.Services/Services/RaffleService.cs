@@ -28,9 +28,10 @@ namespace RaffleRandomizer.Core
 			};
 		}
 		
-		public IEnumerable<object> GenerateWinners(int count, IEnumerable<object> list)
+		public IEnumerable<object> GenerateWinners(int count, IEnumerable<object> list, bool randomizeList)
 		{
-			return _picker.Pick(count, _randomizer.Randomize(list));
+			var randomList = randomizeList ? _randomizer.Randomize(list) : list;
+			return _picker.Pick(count, randomList);
 		}
 	}
 }

@@ -40,11 +40,12 @@ namespace RaffleRandomizer.API.Controllers
 		[HttpPost("winners")]
 		public IActionResult GetWinnersFromUserList(
 			[FromQuery, Required] int count,
+			[FromQuery] bool? randomizeList,
 			[FromBody, Required] IEnumerable<object> list)
 		{
 			try
 			{
-				return new ObjectResult(_raffleService.GenerateWinners(count, list));
+				return new ObjectResult(_raffleService.GenerateWinners(count, list, randomizeList ?? false));
 			}
 
 			catch (Exception e)
@@ -62,18 +63,19 @@ namespace RaffleRandomizer.API.Controllers
 		[HttpGet("winners/db")]
 		public IActionResult GetWinnersFromDatabase(
 			[FromQuery, Required] int count,
-			[FromQuery, Required] string prizeType)
+			[FromQuery, Required] string prizeType,
+			[FromQuery] bool? randomizeList)
 		{
 			try
 			{
 				switch (prizeType.ToLowerInvariant())
 				{ 
 					case "grand":
-						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(true, null, null)));
+						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(true, null, null), randomizeList ?? false));
 					case "major":
-						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(null, true, null)));
+						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(null, true, null), randomizeList ?? false));
 					case "minor":
-						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(null, null, true)));
+						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(null, null, true), randomizeList ?? false));
 					default:
 						return BadRequest("Invalid Prize Type. Valid types are: \"grand\", \"major\", and \"minor\".");
 				}
@@ -94,7 +96,8 @@ namespace RaffleRandomizer.API.Controllers
 		[HttpGet("winners/teams/meeting")]
 		public IActionResult GetWinnersFromTeamsMeeting(
 			[FromQuery, Required] string meetingId,
-			[FromQuery, Required] int count)
+			[FromQuery, Required] int count,
+			[FromQuery] bool? randomizeList)
 		{
 			try
 			{
@@ -116,7 +119,8 @@ namespace RaffleRandomizer.API.Controllers
 		[HttpGet("winners/teams/event")]
 		public IActionResult GetWinnersFromTeamsLiveEvent(
 			[FromQuery, Required] string eventId,
-			[FromQuery, Required] int count)
+			[FromQuery, Required] int count,
+			[FromQuery] bool? randomizeList)
 		{
 			try
 			{
