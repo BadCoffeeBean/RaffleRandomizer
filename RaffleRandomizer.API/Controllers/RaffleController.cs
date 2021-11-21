@@ -34,9 +34,6 @@ namespace RaffleRandomizer.API.Controllers
 		/// <summary>
 		/// (DEMO) Provides a list of winners from a user-submitted list.
 		/// </summary>
-		/// <param name="count"></param>
-		/// <param name="list"></param>
-		/// <returns></returns>
 		[HttpPost("winners")]
 		public IActionResult GetWinnersFromUserList(
 			[FromQuery, Required] int count,
@@ -57,25 +54,68 @@ namespace RaffleRandomizer.API.Controllers
 		/// <summary>
 		/// Provides a list of winners from a pre-configured database.
 		/// </summary>
-		/// <param name="count"></param>
-		/// <param name="prizeType"></param>
-		/// <returns></returns>
 		[HttpGet("winners/db")]
 		public IActionResult GetWinnersFromDatabase(
 			[FromQuery, Required] int count,
 			[FromQuery, Required] string prizeType,
-			[FromQuery] bool? randomizeList)
+			[FromQuery] bool? randomizeList,
+			[FromQuery] bool? allowMultipleChances)
 		{
 			try
 			{
 				switch (prizeType.ToLowerInvariant())
 				{ 
 					case "grand":
-						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(true, null, null), randomizeList ?? false));
+						var winnersGrand = _raffleService.GenerateWinners(
+							count,
+							_dataService.GetParticipantsByRaffleEligibility(true, true, null),
+							randomizeList ?? false);
+
+						if (!allowMultipleChances.GetValueOrDefault())
+						{
+							foreach (var item in winnersGrand)
+							{
+								(item as Participant).GrandPrizeEligible = false;
+								(item as Participant).LastUpdateUtc = DateTime.UtcNow;
+								_dataService.UpdateParticipant(item as Participant);
+							}
+						}
+
+						return new ObjectResult(winnersGrand);
 					case "major":
-						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(null, true, null), randomizeList ?? false));
+						var winnersMajor = _raffleService.GenerateWinners(
+							count,
+							_dataService.GetParticipantsByRaffleEligibility(true, true, null),
+							randomizeList ?? false);
+
+						if (!allowMultipleChances.GetValueOrDefault())
+						{
+							foreach (var item in winnersMajor)
+							{
+								(item as Participant).MajorPrizeEligible = false;
+								(item as Participant).LastUpdateUtc = DateTime.UtcNow;
+								_dataService.UpdateParticipant(item as Participant);
+							}
+						}
+
+						return new ObjectResult(winnersMajor);
 					case "minor":
-						return new ObjectResult(_raffleService.GenerateWinners(count, _dataService.GetParticipantsByRaffleEligibility(null, null, true), randomizeList ?? false));
+						var winnersMinor = _raffleService.GenerateWinners(
+							count,
+							_dataService.GetParticipantsByRaffleEligibility(null, null, true),
+							randomizeList ?? false);
+
+						if (!allowMultipleChances.GetValueOrDefault())
+						{
+							foreach (var item in winnersMinor)
+							{
+								(item as Participant).MinorPrizeEligible = false;
+								(item as Participant).LastUpdateUtc = DateTime.UtcNow;
+								_dataService.UpdateParticipant(item as Participant);
+							}
+						}
+
+						return new ObjectResult(winnersMinor);
 					default:
 						return BadRequest("Invalid Prize Type. Valid types are: \"grand\", \"major\", and \"minor\".");
 				}

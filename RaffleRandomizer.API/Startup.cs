@@ -30,7 +30,11 @@ namespace RaffleRandomizer.API
 		{
 			services.AddSingleton<IRaffleService, RaffleService>();
 			services.AddScoped<IDataService, SQLServerDataService>();
-			services.AddDbContext<RaffleContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Main")));
+			services.AddDbContext<RaffleContext>(options =>
+			{
+				options.UseSqlServer(Configuration.GetConnectionString("Main"));
+				options.EnableSensitiveDataLogging();
+			});
 			services.AddControllers();
 			services.AddSwaggerGen(c =>
 			{

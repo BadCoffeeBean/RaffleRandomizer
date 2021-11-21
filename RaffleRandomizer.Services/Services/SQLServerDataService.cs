@@ -1,9 +1,11 @@
 ﻿using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -94,6 +96,12 @@ namespace RaffleRandomizer.Core
 			if (minorPrizeEligible != null) predicate = predicate = predicate.And(p => p.MinorPrizeEligible == minorPrizeEligible);
 
 			return _database.Participants.AsExpandable().Where(predicate).ToList();
+		}
+
+		public void UpdateParticipant(Participant item)
+		{
+			_database.Entry(item).State = EntityState.Modified;
+			_database.SaveChanges();
 		}
 	}
 }

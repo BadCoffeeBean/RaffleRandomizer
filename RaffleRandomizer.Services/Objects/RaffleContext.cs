@@ -29,8 +29,6 @@ namespace RaffleRandomizer.Core
 		{
 			modelBuilder.Entity<Participant>(entity =>
 			{
-				entity.HasNoKey();
-
 				entity.ToTable("Participant");
 
 				entity.Property(e => e.CreatedUtc)

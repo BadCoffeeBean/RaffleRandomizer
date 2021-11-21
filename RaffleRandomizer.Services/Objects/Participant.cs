@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace RaffleRandomizer.Core
 {
     public partial class Participant
     {
+        [Key]
         public long ParticipantId { get; set; }
         public long EmployeeId { get; set; }
         public DateTime CreatedUtc { get; set; }

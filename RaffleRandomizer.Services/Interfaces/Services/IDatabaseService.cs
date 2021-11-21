@@ -21,5 +21,7 @@ namespace RaffleRandomizer.Core
 		public IEnumerable<Participant> GetParticipantsByRaffleEligibility(bool? grandPrizeEligible, bool? majorPrizeEligible, bool? minorPrizeEligible);
 
 		public IEnumerable<Participant> GetParticipantsByDate(DateTime hireDate, DateTime resignedDate);
+
+		public void UpdateParticipant(Participant item);
 	}
 }
