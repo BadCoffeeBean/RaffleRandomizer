@@ -15,7 +15,7 @@ namespace RaffleRandomizer.Core
 			if (list is null || !list.Any()) throw new ArgumentException("List of participants is empty.");
 			if (count < 1) throw new ArgumentException($"Winners should be between 1 and {list.Count()}.");
 
-			count = count > list.Count() ? count : list.Count();
+			count = count > list.Count() ? list.Count() : count;
 			return list.Take(count);
 		}
 	}

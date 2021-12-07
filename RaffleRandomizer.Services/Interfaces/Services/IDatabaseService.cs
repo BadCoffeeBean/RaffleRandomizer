@@ -23,5 +23,7 @@ namespace RaffleRandomizer.Core
 		public IEnumerable<Participant> GetParticipantsByDate(DateTime hireDate, DateTime resignedDate);
 
 		public void UpdateParticipant(Participant item);
+
+		public void UpdateParticipants(IEnumerable<Participant> items);
 	}
 }

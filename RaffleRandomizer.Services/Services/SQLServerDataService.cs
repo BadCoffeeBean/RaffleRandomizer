@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace RaffleRandomizer.Core
 {
@@ -101,7 +102,27 @@ namespace RaffleRandomizer.Core
 		public void UpdateParticipant(Participant item)
 		{
 			_database.Entry(item).State = EntityState.Modified;
-			_database.SaveChanges();
+			using (var txn = new TransactionScope())
+			{
+				if (_database.SaveChanges() != 1) throw new ApplicationException("Database update failed. Please check.");
+				txn.Complete();
+			}
+			
+		}
+
+		public void UpdateParticipants(IEnumerable<Participant> items)
+		{
+			foreach (var item in items)
+			{
+				_database.Entry(item).State = EntityState.Modified;
+			}
+
+			using (var txn = new TransactionScope())
+			{
+				if (_database.SaveChanges() != items.Count()) throw new ApplicationException("Database update failed. Please check.");
+				txn.Complete();
+			}
+				
 		}
 	}
 }

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaffleRandomizer.Core", "..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaffleRandomizer.API", "..\RaffleRandomizer.API\RaffleRandomizer.API.csproj", "{3DC30021-0171-4357-98E7-926E35B9B4D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaffleRandomizer.AutomatedDraw", "..\RaffleRandomizer.AutomatedDraw\RaffleRandomizer.AutomatedDraw.csproj", "{FA31C1A5-C44D-469E-AE16-FED03B569853}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3DC30021-0171-4357-98E7-926E35B9B4D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DC30021-0171-4357-98E7-926E35B9B4D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DC30021-0171-4357-98E7-926E35B9B4D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA31C1A5-C44D-469E-AE16-FED03B569853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA31C1A5-C44D-469E-AE16-FED03B569853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA31C1A5-C44D-469E-AE16-FED03B569853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA31C1A5-C44D-469E-AE16-FED03B569853}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

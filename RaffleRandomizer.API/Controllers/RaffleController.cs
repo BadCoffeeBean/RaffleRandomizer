@@ -45,6 +45,11 @@ namespace RaffleRandomizer.API.Controllers
 				return new ObjectResult(_raffleService.GenerateWinners(count, list, randomizeList ?? false));
 			}
 
+			catch (Exception eArg) when (eArg is ArgumentException)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, eArg.Message);
+			}
+
 			catch (Exception e)
 			{
 				return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
@@ -69,7 +74,7 @@ namespace RaffleRandomizer.API.Controllers
 						var winnersGrand = _raffleService.GenerateWinners(
 							count,
 							_dataService.GetParticipantsByRaffleEligibility(true, true, null),
-							randomizeList ?? false);
+							randomizeList ?? true);
 
 						if (!allowMultipleChances.GetValueOrDefault())
 						{
@@ -77,8 +82,9 @@ namespace RaffleRandomizer.API.Controllers
 							{
 								(item as Participant).GrandPrizeEligible = false;
 								(item as Participant).LastUpdateUtc = DateTime.UtcNow;
-								_dataService.UpdateParticipant(item as Participant);
 							}
+
+							_dataService.UpdateParticipants(winnersGrand.Cast<Participant>());
 						}
 
 						return new ObjectResult(winnersGrand);
@@ -86,7 +92,7 @@ namespace RaffleRandomizer.API.Controllers
 						var winnersMajor = _raffleService.GenerateWinners(
 							count,
 							_dataService.GetParticipantsByRaffleEligibility(true, true, null),
-							randomizeList ?? false);
+							randomizeList ?? true);
 
 						if (!allowMultipleChances.GetValueOrDefault())
 						{
@@ -94,8 +100,9 @@ namespace RaffleRandomizer.API.Controllers
 							{
 								(item as Participant).MajorPrizeEligible = false;
 								(item as Participant).LastUpdateUtc = DateTime.UtcNow;
-								_dataService.UpdateParticipant(item as Participant);
 							}
+
+							_dataService.UpdateParticipants(winnersMajor.Cast<Participant>());
 						}
 
 						return new ObjectResult(winnersMajor);
@@ -103,7 +110,7 @@ namespace RaffleRandomizer.API.Controllers
 						var winnersMinor = _raffleService.GenerateWinners(
 							count,
 							_dataService.GetParticipantsByRaffleEligibility(null, null, true),
-							randomizeList ?? false);
+							randomizeList ?? true);
 
 						if (!allowMultipleChances.GetValueOrDefault())
 						{
@@ -111,14 +118,20 @@ namespace RaffleRandomizer.API.Controllers
 							{
 								(item as Participant).MinorPrizeEligible = false;
 								(item as Participant).LastUpdateUtc = DateTime.UtcNow;
-								_dataService.UpdateParticipant(item as Participant);
 							}
+
+							_dataService.UpdateParticipants(winnersMinor.Cast<Participant>());
 						}
 
 						return new ObjectResult(winnersMinor);
 					default:
 						return BadRequest("Invalid Prize Type. Valid types are: \"grand\", \"major\", and \"minor\".");
 				}
+			}
+
+			catch (Exception eArg) when (eArg is ArgumentException)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, eArg.Message);
 			}
 
 			catch (Exception e)
@@ -144,6 +157,11 @@ namespace RaffleRandomizer.API.Controllers
 				return BadRequest("DEMO");
 			}
 
+			catch (Exception eArg) when (eArg is ArgumentException)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, eArg.Message);
+			}
+
 			catch (Exception e)
 			{
 				return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
@@ -165,6 +183,11 @@ namespace RaffleRandomizer.API.Controllers
 			try
 			{
 				return BadRequest("DEMO");
+			}
+
+			catch (Exception eArg) when (eArg is ArgumentException)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, eArg.Message);
 			}
 
 			catch (Exception e)
